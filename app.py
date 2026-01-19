@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, abort
 from datetime import datetime, timedelta
-from db import get_conn
+from db_pymssql import get_conn
 
 app = Flask(__name__)
 
