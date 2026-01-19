@@ -1,0 +1,21 @@
+# Render 배포 설정 예시
+
+services:
+  - type: web
+    name: gagongself
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn app:app"
+    envVars:
+      - key: DB_SERVER
+        value: ms0501.gabiadb.com
+      - key: DB_NAME
+        value: yujin
+      - key: DB_USER
+        sync: false  # 수동으로 설정
+      - key: DB_PASSWORD
+        sync: false  # 수동으로 설정 (Secret)
+      - key: DB_DRIVER
+        value: FreeTDS
+      - key: PYTHON_VERSION
+        value: 3.11.0

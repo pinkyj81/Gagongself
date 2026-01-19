@@ -1,0 +1,7 @@
+Flask==3.0.0
+pyodbc==5.0.1
+gunicorn==21.2.0
+
+# SQL Server 2008 구버전 지원을 위한 대안
+# Render 배포 시 pyodbc가 작동하지 않으면 아래 주석 해제:
+# pymssql==2.2.8

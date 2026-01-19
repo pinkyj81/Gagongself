@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}가공자주검사 조회{% endblock %}
+
+{% block styles %}
+.search-form { background: #f8f9fa; padding: 25px; border-radius: 6px; margin-bottom: 30px; }
+.form-group { display: inline-block; margin-right: 20px; margin-bottom: 10px; }
+.form-group label { display: block; margin-bottom: 5px; color: #555; font-weight: 600; }
+.form-group input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+.btn { padding: 10px 24px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.btn:hover { background: #0056b3; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
+table th, table td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd; }
+table th { background: #f8f9fa; color: #333; font-weight: 600; position: sticky; top: 0; }
+table tr:hover { background: #f8f9fa; }
+.no-data { text-align: center; padding: 60px 20px; color: #999; font-size: 16px; }
+.info { color: #666; margin: 20px 0; font-size: 14px; }
+.pagination { margin-top: 30px; text-align: center; }
+.pagination a { display: inline-block; padding: 8px 12px; margin: 0 4px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; }
+.pagination a:hover { background: #0056b3; }
+.pagination .current { background: #6c757d; cursor: default; }
+{% endblock %}
+
+{% block content %}
+<h1>가공자주검사 조회</h1>
+
+<div class="search-form">
+    <form method="get" action="/list">
+        <div class="form-group">
+            <label for="start">시작일:</label>
+            <input type="date" id="start" name="start" value="{{ start or '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="end">종료일:</label>
+            <input type="date" id="end" name="end" value="{{ end or '' }}" required>
+        </div>
+        <div class="form-group">
+            <label>&nbsp;</label>
+            <button type="submit" class="btn">조회</button>
+        </div>
+    </form>
+</div>
+
+{% if rows is defined %}
+    <div class="info">
+        <strong>총 {{ total }}건</strong> ({{ page }}/{{ total_pages }} 페이지)
+    </div>
+
+    {% if rows %}
+    <table>
+        <thead>
+            <tr>
+                <th>순번</th>
+                <th>사업코드</th>
+                <th>자주검사번호</th>
+                <th>입고일</th>
+                <th>코드번호</th>
+                <th>작업자</th>
+                <th>작업일</th>
+                <th>교대</th>
+                <th>작업시간</th>
+                <th>LOT번호</th>
+                <th>설치</th>
+                <th>비고</th>
+                <th>등록일</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                <td>{{ row.rn }}</td>
+                <td>{{ row.SaupCode or '' }}</td>
+                <td>{{ row.SelfNo or '' }}</td>
+                <td>{{ row.InDate or '' }}</td>
+                <td>{{ row.CodeNo or '' }}</td>
+                <td>{{ row.Worker or '' }}</td>
+                <td>{{ row.WDate or '' }}</td>
+                <td>{{ row.Shift or '' }}</td>
+                <td>{{ row.WTime or '' }}</td>
+                <td>{{ row.LotNo or '' }}</td>
+                <td>{{ row.Install or '' }}</td>
+                <td>{{ row.BiGo or '' }}</td>
+                <td>{{ row.EntryDate.strftime('%Y-%m-%d %H:%M') if row.EntryDate else '' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if page > 1 %}
+        <a href="?start={{ start }}&end={{ end }}&page={{ page - 1 }}">이전</a>
+        {% endif %}
+        
+        {% for p in range(1, total_pages + 1) %}
+            {% if p == page %}
+                <a href="#" class="current">{{ p }}</a>
+            {% elif (p <= 3) or (p >= total_pages - 2) or (p >= page - 1 and p <= page + 1) %}
+                <a href="?start={{ start }}&end={{ end }}&page={{ p }}">{{ p }}</a>
+            {% elif p == 4 and page > 5 %}
+                <span>...</span>
+            {% elif p == total_pages - 3 and page < total_pages - 4 %}
+                <span>...</span>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+        <a href="?start={{ start }}&end={{ end }}&page={{ page + 1 }}">다음</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="no-data">조회 결과가 없습니다.</div>
+    {% endif %}
+{% else %}
+    <div class="no-data">날짜를 선택하고 조회 버튼을 클릭하세요.</div>
+{% endif %}
+{% endblock %}
